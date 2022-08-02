@@ -1,0 +1,5 @@
+fastapi[all]
+SQLAlchemy
+passlib[bcrypt]
+PyJWT
+flask-admin

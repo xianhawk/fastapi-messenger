@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap-icons-1.8.2/bootstrap-icons.css') }}">
+    <title>{% block title %}{% endblock %} - FastChat</title>
+    {% block head %}
+    {% endblock %}
+    <script src="{{ url_for('static', path='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', path='js/jquery.js') }}"></script>
+
+</head>
+
+<body>
+    {% block body %}
+    {% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/reg_and_signin.css') }}">
+{% endblock %}
+{% block body %}
+<main class="form-signin w-100 m-auto text-center">
+    <p class=" fs-2 text-primary fw-bold me-auto mb-2" href="#">
+        <i class="bi bi-chat-fill"></i> FastChat
+    </p>
+    <p class="fs-4 mb-2 fw-normal">Регистрация</p>
+    <p class="p-0 mb-1" id="responseReq"></p>
+
+    <form action="/signup/" id="form" method="post">
+        <div class="form-floating">
+            <input type="text" class="form-control rounded-0" placeholder="username" id="username" value=""
+                minlength="4" maxlength="20" name="username">
+            <label for="floatingInput">Имя пользователя</label>
+        </div>
+        <div class="form-floating">
+            <input type="email" class="form-control rounded-0" placeholder="name@example.com" id="email" value=""
+                name="email">
+            <label for="floatingInput">Адрес эл. почты</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control rounded-0" placeholder="Password" id="password" value=""
+                minlength="6" name="password">
+            <label for="floatingPassword">Пароль</label>
+        </div>
+        <a href="/signin/">Уже есть аккаунт</a>
+        <button class="mt-2 w-100 btn btn-lg btn-primary rounded-0" id="signupBtn" type="submit">Продолжить</button>
+        <p class="mt-3 mb-3 text-muted opacity-25">&copy; 2022, FastChat</p>
+    </form>
+</main>
+
+<script>
+    var frm = $('#form');
+    frm.submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: frm.attr('action'),
+            type: frm.attr('method'),
+            contentType: 'application/json',
+            dataType: "json",
+            data: JSON.stringify({
+                "username": $("#username").val(),
+                "email": $("#email").val(),
+                "password": $("#password").val()
+            }),
+            success: function (response) {
+                $("#responseReq").html('<span class="text-success fw-bold">Вы зарегистрировались!</span>');
+                window.location.replace("/signin/");
+            },
+            error: function (response) {
+                $("#responseReq").html('<span class="text-danger fw-bold">' + response.responseJSON.detail + '</span>');
+            }
+        });
+    });
+</script>
+{% endblock %}

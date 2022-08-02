@@ -1,0 +1,19 @@
+.bg-chat {
+    background-color: #0185ff;
+}
+
+.header-border {
+    border-bottom: #edf1f3 1px solid;
+}
+
+.pfp-border {
+    border: #edf1f3 1px solid;
+}
+
+.messages-bar-border {
+    border-right: #edf1f3 1px solid;
+}
+
+.message-border {
+    border-top: #edf1f3 1px solid;
+}

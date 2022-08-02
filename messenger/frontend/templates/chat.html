@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% block title %}Чат{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/chat.css') }}">
+{% endblock %}
+{% block body %}
+<header class="container-fluid header-border bg-primary">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white fw-bold me-auto" href="/chat/">
+                <i class="bi bi-chat-fill"></i> FastChat</a>
+
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 dropdown">
+                    <a href="#" class="d-block link-light fw-bold text-decoration-none dropdown-toggle"
+                        id="dropdownUser" id_user="{{ user.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ url_for('static', path='img/default_pfp.png') }}" alt="mdo" class="rounded-circle"
+                            width="32" height="32">
+                        {{ user.username }}
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end text-small shadow-sm" aria-labelledby="dropdownUser">
+                        {% if user.is_superuser %}
+                        <li><a class="dropdown-item" href="#">Админ-панель</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="#">Настройки</a></li>
+                        <li><a class="dropdown-item" href="#">Профиль</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><button class="dropdown-item text-danger" href="#" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalCenterExit">Выйти</button></li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<main class="container-fluid" style="height: calc(100vh - 57px);">
+    <div class="row row-cols-2 h-100">
+        <div class="col-12 col-sm-4 col-lg-3 p-0 messages-bar-border d-table h-100">
+            <p class="text-center m-0 fs-5">Контакты</p>
+            <div class="d-table-row h-100" style="position: relative;">
+                <div class="list-group p-1 w-100" id="d-contacts"
+                    style="position: absolute;  overflow-y: auto; height: inherit; min-height: inherit; max-height: inherit;">
+                    <!--  -->
+                </div>
+            </div>
+
+            <div class="d-block text-center mt-auto message-border py-2">
+                <button class="btn btn-outline-primary rounded-0 w-75" data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"><i class="bi bi-person-plus-fill"></i>
+                    Добавить контакт</button>
+
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Поиск контакта</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/search-contanct/" class="w-100" method="post" id="formContact">
+                                    <div class="input-group m-0">
+                                        <input type="email" class="form-control" placeholder="Эл. адрес пользователя"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                            id="emailContact" value="">
+
+                                        <button class="btn btn-outline-primary" type="submit"><i
+                                                class="bi bi-search"></i></button>
+                                    </div>
+                                </form>
+                                <div class="d-flex w-100 justify-content-center mt-3">
+                                    <div class="align-items-center d-none" id="d-contact">
+                                        <img src="{{ url_for('static', path='img/default_pfp.png') }}" alt="mdo"
+                                            class="rounded-circle" width="32" height="32">
+                                        <p class="m-0 me-3 ms-1" id="usernameContact" id_contact=""></p>
+                                        <button class="btn btn-primary" id="addContactBtn">Добавить</button>
+                                    </div>
+                                </div>
+                                <p class="m-0 text-center" id="respReqContact"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="exampleModalCenterExit" tabindex="-1" aria-labelledby="exampleModalCenterTitle">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Выход из аккаунта</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h4 class="text-danger">Вы уверены что хотите выйти из аккаунта?</h4>
+                            <button class="btn btn-outline-primary" id="logoutBtn">Да</button>
+                            <button class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm d-none d-sm-table h-100 p-0 d-sm-none" id="d-chat">
+            <p class="d-table-row text-center fw-bold m-0" style="background-color: #00948517;" id="chat-username"
+                id_contact_user="0">
+                Username</p>
+            <div class="h-100 d-table-row" style="position: relative;">
+                <div class="list-group p-2 w-100 d-flex flex-column-reverse"
+                    style="position: absolute;  overflow-y: auto; height: inherit; min-height: inherit; max-height: inherit;"
+                    id="d-chat-messages">
+
+                </div>
+            </div>
+
+            <div class="col message-border p-2 mt-auto d-block bg-body">
+                <div class="d-flex align-items-end">
+                    <div class="form w-100 me-2">
+                        <textarea class="form-control rounded-0" placeholder="Текст сообщения" id="textMessage"
+                            style="height: 50px" maxlength="300"></textarea>
+                    </div>
+                    <button class="btn btn-primary rounded-circle" id="sendBtn" style="height: 50px; width: 50px;">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    $.ajax({
+        url: '/get-contacts/',
+        type: 'post',
+        success: function (response) {
+            $.each(response, function (index, value) {
+                $("#d-contacts").append(`<button class="list-group-item d-flex justify-content-between list-group-item-action align-items-center border-0 border-start border-2 border-light rounded-0 py-3"
+                id_contact="${value.contact_user_id}" contact_username="${value.username}" id="openChatBtn" onclick="selectContact(this);">
+                <img src="{{ url_for('static', path='img/default_pfp.png') }}" alt="mdo" class="rounded-circle"
+                    width="32" height="32">
+                <div class="ms-2 me-auto">
+                    <div>
+                        ${value.username}</div>
+                </div>
+                <span class="badge bg-primary rounded-pill" hidden>!</span>
+            </button>`)
+            });
+        }
+    });
+
+
+    function selectContact(contact) {
+        $("#chat-username").text($(contact).attr("contact_username"));
+        $("#chat-username").attr("id_contact_user", $(contact).attr("id_contact"));
+        getMessages();
+    }
+
+
+    function getMessages() {
+        $.ajax({
+            url: '/get-messages/',
+            type: 'post',
+            contentType: 'application/json',
+            dataType: "json",
+            data: JSON.stringify({
+                "recipient_id": $("#chat-username").attr("id_contact_user")
+            }),
+            success: function (response) {
+                $("#d-chat").removeClass("d-sm-none");
+                $("#d-chat-messages").empty()
+                $.each(response, function (index, value) {
+                    $("#d-chat-messages").append(`<div class="d-block p-2 mb-2 list-group-item list-group-item-action border-0 p-0">
+                        <div class="d-flex align-items-end ">
+                            <img src="{{ url_for('static', path='img/default_pfp.png') }}" alt="mdo"
+                                class="rounded-circle" width="32" height="32">
+                            <div class="p-1 ps-3">
+                                <pre class="fw-bold `+ ($("#dropdownUser").attr("id_user") != value.sender_id ? 'bg-secondary bg-opacity-10 text-dark' : 'bg-primary text-white') + ` p-2 m-0"
+                                    style="border-radius: 10px 10px 10px 0;">${value.text}</pre>
+                            </div>
+                        </div>
+                        <p class="text-muted m-0 mt-1 ms-5" style="font-size: 12px;">${value.sending_date}</p>
+                    </div>`)
+                });
+            }
+        });
+    }
+
+
+    function backgroundGetMessage() {
+        setTimeout(function () {
+            console.log("loop")
+            if ($("#chat-username").attr("id_contact_user") != 0) {
+                getMessages()
+            }
+            backgroundGetMessage()
+        }, 3800)
+    }
+    backgroundGetMessage()
+
+    $("#addContactBtn").click(function () {
+        $.ajax({
+            url: '/add-contact/',
+            type: 'post',
+            contentType: 'application/json',
+            dataType: "json",
+            data: JSON.stringify({
+                "contact_user_id": parseInt($("#usernameContact").attr("id_contact"))
+            }),
+            success: function (response) {
+                window.location.replace("/chat/");
+            }
+        });
+    })
+
+
+    $("#sendBtn").click(function () {
+        if ($.trim($("#textMessage").val()) !== "") {
+            $.ajax({
+                url: '/sending-message/',
+                type: 'post',
+                contentType: 'application/json',
+                dataType: "json",
+                data: JSON.stringify({
+                    "text": $('#textMessage').val(),
+                    "recipient_id": parseInt($("#chat-username").attr("id_contact_user"))
+                }),
+                success: function (response) {
+                    $('#textMessage').val("")
+                    getMessages()
+                }
+            });
+        }
+    })
+
+
+    var frm = $('#formContact');
+    frm.submit(function (e) {
+        e.preventDefault();
+        if ($("#emailContact").val() != "") {
+            $.ajax({
+                url: frm.attr('action'),
+                type: frm.attr('method'),
+                contentType: 'application/json',
+                dataType: "json",
+                data: JSON.stringify({
+                    "email": $("#emailContact").val()
+                }),
+                success: function (response) {
+                    console.log(response)
+                    $("#usernameContact").text(response.username);
+                    $("#usernameContact").attr("id_contact", response.id_contact);
+                    $("#d-contact").removeClass("d-none")
+                    $("#d-contact").addClass("d-flex")
+                    $("#respReqContact").text("")
+                },
+                error: function (response) {
+                    $("#d-contact").removeClass("d-flex")
+                    $("#d-contact").addClass("d-none")
+                    $("#respReqContact").text("Пользователя не найдено")
+                }
+            });
+        }
+    });
+
+
+    $("#logoutBtn").click(function () {
+        $.ajax({
+            url: '/logout/',
+            type: 'post',
+            success: function (response) {
+                window.location.replace("/signin/");
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Авторизация{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/reg_and_signin.css') }}">
+{% endblock %}
+{% block body %}
+<main class="form-signin w-100 m-auto text-center">
+    <form action="/token/" method="post" id="form">
+        <p class="fs-2 text-primary fw-bold me-auto mb-2" href="#">
+            <i class="bi bi-chat-fill"></i> FastChat
+        </p>
+        <p class="fs-4 mb-2 fw-normal">Авторизация</p>
+        <p class="p-0 mb-1" id="responseReq"></p>
+        <div class="form-floating">
+            <input type="email" class="form-control rounded-0" placeholder="name@example.com" id="email"
+                value="{{ email }}">
+            <label for="floatingInput">Адрес эл. почты</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control rounded-0" placeholder="Password" id="password" value=""
+                minlength="6">
+            <label for="floatingPassword">Пароль</label>
+        </div>
+        <a href="/signup/">У меня нету аккаунта</a>
+        <button class="mt-2 w-100 btn btn-lg btn-primary rounded-0" id="signinBtn" type="submit">Войти</button>
+        <p class="mt-3 mb-3 text-muted opacity-25">&copy; 2022, FastChat</p>
+    </form>
+</main>
+
+<script>
+    var frm = $('#form');
+    frm.submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: frm.attr('action'),
+            type: frm.attr('method'),
+            contentType: 'application/json',
+            dataType: "json",
+            data: JSON.stringify({
+                "email": $("#email").val(),
+                "password": $("#password").val()
+            }),
+            success: function (response) {
+                $("#responseReq").html('<span class="text-success fw-bold">Вы вошли в аккаунт!</span>');
+                window.location.replace("/chat/");
+            },
+            error: function (response) {
+                $("#responseReq").html('<span class="text-danger fw-bold">' + response.responseJSON.detail + '</span>');
+            }
+        });
+    });
+
+</script>
+{% endblock %}
