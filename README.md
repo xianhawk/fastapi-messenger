@@ -1,6 +1,6 @@
-# FastChat
+# FastAPI Messenger
 
-FastChat - this is a **FastAPI** web application for chatting.
+This is a **FastAPI** web application for chatting.
 
 ## Install
 
