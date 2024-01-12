@@ -2,17 +2,17 @@ EN | [RU](README-ru.md)
 
 # FastAPI Messenger
 
-This is a simple chat web application developed using FastAPI, created to showcase the capabilities of this framework and to gain experience in web application development. Although the application is straightforward, it provides basic chat functionalities for exchanging messages between users.
+This web application was developed using FastAPI to showcase the framework's capabilities and gain experience in web development. It provides basic chat functionality for exchanging messages between users.
 
 ## 🎯 Project Objective
 
-The primary goal of this project is to develop a functional prototype of a chat web application based on FastAPI. The project was developed by a single developer as part of a coursework to study and apply FastAPI technology practically.
+The main objective of this project is to create a working prototype of a chat web application using FastAPI. The project was completed by a single developer as part of a coursework to gain practical experience with FastAPI technology.
 
 ## 🏗️ Key Features
 
-- User registration and authentication.
-- Instant messaging between registered users.
-- A simple and intuitive user interface for ease of use.
+- The system allows users to register and authenticate their accounts.
+- Registered users can communicate with each other through instant messaging.
+- The user interface is designed to be simple and intuitive for ease of use.
 
 ## 🛠️ Technologies Used
 
